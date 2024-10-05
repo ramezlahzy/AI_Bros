@@ -1,0 +1,87 @@
+import java.util.ArrayList;
+
+public class Node {
+    private final Node parent;
+    private String operator;
+    private final int depth;
+    private final int pathCost;
+    private final char[][] bottles;
+
+    public Node(char[][] bottles,Node parent,int incrementalCost) {
+        this.bottles=bottles;
+        this.parent=parent;
+        this.pathCost=incrementalCost+parent.pathCost;
+        this.depth=parent.depth+1;
+        this.operator="pour";
+    }
+    public Node(String state, Node parent, String operator, int depth, int pathCost) {
+        this.parent = parent;
+        this.operator = operator;
+        this.depth = depth;
+        this.pathCost = pathCost;
+        String[] states = state.split(";");
+        int numBottles = Integer.parseInt(states[0]);
+        int bottleCapacity = Integer.parseInt(states[1]);
+        bottles = new char[numBottles][bottleCapacity];
+        for (int i = 0; i < numBottles; i++) {
+            String[] bottles = states[2 + i].split(",");
+            for (int j = 0; j < bottles.length; j++)
+                this.bottles[i][j] = bottles[j].charAt(0);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Node other = (Node) obj;
+        if (this.bottles.length != other.bottles.length)
+            return false;
+        for (int i = 0; i < this.bottles.length; i++)
+            for (int j = 0; j < this.bottles.length; j++)
+                if (this.bottles[i][j] != other.bottles[i][j])
+                    return false;
+        return true;
+    }
+
+    public ArrayList<Node> expand() {
+        ArrayList<Node> children = new ArrayList<>();
+        for (int i = 0; i < bottles.length; i++)
+            for (int j = 0; j < bottles.length; j++) {
+                if (i == j)
+                    continue;
+                Node pour1 = pour(i, j);
+                children.add(pour1);
+            }
+        return children;
+    }
+
+
+    private Node pour(int i, int j) {
+        char[] bottle1 = bottles[i].clone();
+        char[] bottle2 = bottles[j].clone();
+        int layer1Pointer = bottle1.length;
+        int layer2Pointer = layer1Pointer;
+        int cost=0;
+        for (int i1 = 0; i1 < bottle1.length; i1++) {
+            if (bottle1[i1] != 'e' && layer1Pointer == bottle1.length)
+                layer1Pointer = i1;
+            if (bottle2[i1] != 'e' && layer2Pointer == bottle2.length)
+                layer2Pointer = i1;
+        }
+        while (layer1Pointer < bottle1.length && layer2Pointer > 0) {
+            if (layer2Pointer < bottle2.length && bottle1[layer1Pointer] != bottle2[layer2Pointer])
+                break;
+            bottle2[--layer2Pointer] = bottle1[layer1Pointer];
+            bottle1[layer1Pointer++] = 'e';
+            cost++;
+        }
+        return new Node(new char[][]{bottle1,bottle2},parent,cost);
+    }
+
+    public boolean isGoal() {
+        for (char[] bottle : bottles)
+            for (int i = 0; i < bottle.length - 1; i++)
+                if (bottle[i] != bottle[i + 1])
+                    return false;
+        return true;
+    }
+}
