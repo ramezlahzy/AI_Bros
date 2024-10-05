@@ -39,22 +39,22 @@ public  class GenericSearch {
         return null;
     }
     public Node UniCostSolve(Problem problem) {
-        ArrayList<Node> arrayList=new ArrayList<>();
         Set<Node> visited=new HashSet<>();
         Node root=problem.getInitialState();
-        arrayList.add(root);
-        while(!arrayList.isEmpty()) {
-            Node popped=arrayList.remove(0);
+        PriorityQueue<Node> priorityQueue=new PriorityQueue<>();
+        priorityQueue.add(root);
+        while(!priorityQueue.isEmpty()) {
+            Node popped=priorityQueue.remove();
             if(visited.contains(popped))
                 continue;
             visited.add(popped);
             if(popped.isGoal())
                 return popped;
             ArrayList<Node> children=popped.expand();
-            arrayList.addAll(children);
-
+            priorityQueue.addAll(children);
         }
-
+        return null;
     }
+
 
 }

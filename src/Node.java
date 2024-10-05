@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Node {
+public class Node implements Comparable<Node> {
     private final Node parent;
     private String operator;
     private final int depth;
@@ -84,4 +84,12 @@ public class Node {
                     return false;
         return true;
     }
+
+    @Override
+    public int compareTo(Node o) {
+        return Integer.compare(this.pathCost, o.pathCost);
+    }
+    //compare to
+
+
 }
