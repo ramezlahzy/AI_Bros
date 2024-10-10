@@ -9,8 +9,8 @@ public class WaterSortSearch extends GenericSearch{
 
     Problem problem;
 
-    public static String solve(String initialState, String strategy, boolean visualize) {
-
-        return initialState;
-    }
+//    public static String solve(String initialState, String strategy, boolean visualize) {
+//
+//        return initialState;
+//    }initialState
 }

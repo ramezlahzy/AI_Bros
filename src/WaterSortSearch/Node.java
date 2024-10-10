@@ -4,10 +4,25 @@ import java.util.ArrayList;
 
 public class Node implements Comparable<Node> {
     private final Node parent;
+
+    public String getAction() {
+        return action;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
     private String action;
     private final int depth;
+
+    public int getPathCost() {
+        return pathCost;
+    }
+
     private final int pathCost;
     private final char[][] bottles;
+
 
     public Node(char[][] bottles,Node parent,int incrementalCost,String action) {
         this.bottles=bottles;
@@ -80,7 +95,10 @@ public class Node implements Comparable<Node> {
         }
         if (cost ==0)
             return null;
-        return new Node(new char[][]{bottle1,bottle2},parent,cost,"pour_"+i+"_"+j);
+
+        String actions = action.isEmpty() ?"":action + ",";
+
+        return new Node(new char[][]{bottle1,bottle2},parent,this.pathCost+ cost,actions+"pour_"+i+"_"+j);
     }
 
     public boolean isGoal() {
