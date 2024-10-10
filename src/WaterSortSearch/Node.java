@@ -1,6 +1,7 @@
 package WaterSortSearch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Node implements Comparable<Node> {
     private final Node parent;
@@ -20,15 +21,16 @@ public class Node implements Comparable<Node> {
         return pathCost;
     }
 
-    private final int pathCost;
+    private  int pathCost;
     private final char[][] bottles;
 
 
-    public Node(char[][] bottles,Node parent,int incrementalCost,String action) {
+    public Node(char[][] bottles,Node parent,int pathCost,String action,int depth) {
         this.bottles=bottles;
         this.parent=parent;
-        this.pathCost=incrementalCost+parent.pathCost;
-        this.depth=parent.depth+1;
+        this.pathCost=pathCost;
+
+        this.depth= depth;
         this.action=action;
     }
     public Node(String state, Node parent, String action, int depth, int pathCost) {
@@ -50,12 +52,12 @@ public class Node implements Comparable<Node> {
     @Override
     public boolean equals(Object obj) {
         Node other = (Node) obj;
-        if (this.bottles.length != other.bottles.length)
-            return false;
+
         for (int i = 0; i < this.bottles.length; i++)
-            for (int j = 0; j < this.bottles.length; j++)
+            for (int j = 0; j < this.bottles[0].length; j++){
                 if (this.bottles[i][j] != other.bottles[i][j])
                     return false;
+            }
         return true;
     }
 
@@ -69,13 +71,17 @@ public class Node implements Comparable<Node> {
                 if(pour1!=null)
                   children.add(pour1);
             }
+        System.out.println("children of depth "+depth+" is:"+children.size());
         return children;
     }
 
 
     private Node pour(int i, int j) {
+        char[][] allBottles = bottles.clone();
         char[] bottle1 = bottles[i].clone();
         char[] bottle2 = bottles[j].clone();
+        allBottles[i]=bottle1;
+        allBottles[j]=bottle2;
         int layer1Pointer = bottle1.length;
         int layer2Pointer = layer1Pointer;
         int cost=0;
@@ -95,10 +101,11 @@ public class Node implements Comparable<Node> {
         }
         if (cost ==0)
             return null;
-
+//        System.out.println("action is "+action);
+//        System.out.println("depth is "+depth);
         String actions = action.isEmpty() ?"":action + ",";
 
-        return new Node(new char[][]{bottle1,bottle2},parent,this.pathCost+ cost,actions+"pour_"+i+"_"+j);
+        return new Node(allBottles,parent,this.pathCost+ cost,actions+"pour_"+i+"_"+j,this.depth+1);
     }
 
     public boolean isGoal() {
@@ -114,6 +121,17 @@ public class Node implements Comparable<Node> {
         return Integer.compare(this.pathCost, o.pathCost);
     }
     //compare to
+    public String toString(){
+        StringBuilder node= new StringBuilder();
+        node.append(" depth is ="+depth + '\n');
+
+        node.append(" action is ="+action + '\n');
+        for (int i = 0; i < bottles.length; i++) {
+            node.append(Arrays.toString(bottles[i])+'\n');
+        }
+        return node.toString();
+
+    }
 
 
 }

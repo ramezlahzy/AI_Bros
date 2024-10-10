@@ -49,6 +49,7 @@ public class WaterSortSearchTest {
         solution = solution.replace(" ", "")+";";
         System.out.println(solution);
         Checker pc = new Checker(grid0);
+        System.out.println(grid0);
         assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid0, solution));
     }
     @Test(timeout = 60000)
@@ -440,12 +441,14 @@ class Checker{
     public boolean applyPlan(String grid, String solution){
         boolean x = true;
         solution = solution.toLowerCase();
+        System.out.println("solution: ");
         if (solution.equals("nosolution")) {
             return false;
         }
 //        System.out.println(solution);
         String[] y  = solution.split(";");
         String z = y[0];
+
         int _a = Integer.parseInt(y[1]);
         z.replace(" ", "");
         z.replace("\n", "");
@@ -455,10 +458,12 @@ class Checker{
 
         String[] _b = z.split(",");
 
+        System.out.println("_b "+_b);
         x = i(_b);
         if(!x) {
             return false;
         }
+
         return t() && this.b == _a;
     }
 
