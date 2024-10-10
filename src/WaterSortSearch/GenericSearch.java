@@ -33,8 +33,9 @@ public  class GenericSearch {
         System.out.println(node1.equals(node2));
         return switch (strategy) {
             case "BF" -> BFSSolve(initialState);
-//            case "DF" -> DFSSolve(initialState);
-//            case "UC" -> UniCostSolve(initialState);
+            case "DF" -> DFSSolve(initialState);
+            case "UC" -> UniCostSolve(initialState);
+            case "ID" -> IDSolve(initialState);
             default -> "NOSOLUTION";
         };
 
@@ -84,47 +85,119 @@ public  class GenericSearch {
 
 
     public static String DFSSolve(String initialState) {
-        Stack<Node> stack=new Stack<>();
-        Set<Node> visited=new HashSet<>();
-        Node root=new Node(initialState, null, "", 0, 0);
+        Stack<Node> stack = new Stack<>();
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
         int expandedNodes = 0;
 
         stack.push(root);
-        while(!stack.isEmpty()){
-            Node popped=stack.pop();
-            if(visited.contains(popped))
-                continue;
-            visited.add(popped);
+        visited.add(root);
+        while (!stack.isEmpty()) {
+            Node popped = stack.pop();
+
             expandedNodes++;
-            if(popped.isGoal())
-                return popped.getAction() + ";" + popped.getPathCost()+ ";" + expandedNodes;
-            ArrayList<Node> children=popped.expand();
-            for (Node child:children)
-                 stack.push(child);
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
+                    if (node.equals(child)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+                if (!isVisited) {
+                    stack.add(child);
+                    visited.add(child);
+                }
+            }
         }
         return null;
     }
     public static String UniCostSolve(String initialState) {
-        Set<Node> visited=new HashSet<>();
-        Node root= new Node(initialState, null, "", 0, 0);
-        PriorityQueue<Node> priorityQueue=new PriorityQueue<>();
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
         priorityQueue.add(root);
+        visited.add(root);
         int expandedNodes = 0;
 
-        while(!priorityQueue.isEmpty()) {
-            Node popped=priorityQueue.remove();
-            if(visited.contains(popped))
-                continue;
-            visited.add(popped);
+        while (!priorityQueue.isEmpty()) {
+            Node popped = priorityQueue.poll();
+
             expandedNodes++;
-            if(popped.isGoal())
-                return popped.getAction() + ";" + popped.getPathCost()+ ";" + expandedNodes;
-            ArrayList<Node> children=popped.expand();
-            priorityQueue.addAll(children);
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
+                    if (node.equals(child)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+                if (!isVisited) {
+                    priorityQueue.add(child);
+                    visited.add(child);
+                }
+            }
         }
         return null;
     }
 
+    public static String DepthLimitedSearch(String initialState,int level) {
+        Stack<Node> stack = new Stack<>();
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        int expandedNodes = 0;
+
+        stack.push(root);
+        visited.add(root);
+        while (!stack.isEmpty()) {
+            Node popped = stack.pop();
+
+            expandedNodes++;
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            if (popped.getDepth() < level) {
+
+                ArrayList<Node> children = popped.expand();
+                for (int i = 0; i < children.size(); i++) {
+                    Node child = children.get(i);
+                    boolean isVisited = false;
+                    for (Node node : visited) {
+                        if (node.equals(child)) {
+                            isVisited = true;
+                            break;
+                        }
+                    }
+                    if (!isVisited) {
+                        stack.add(child);
+                        visited.add(child);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String IDSolve(String initialState) {
+        String sol = "";
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            sol = DepthLimitedSearch(initialState, i);
+            if (sol != null)
+                return sol;
+
+
+
+
+        }
+        return null;
+    }
 //    public Node depthLimitedSearch(String initialState, int depth) {
 //        return DFSSolve(initialState, depth);
 //    }
