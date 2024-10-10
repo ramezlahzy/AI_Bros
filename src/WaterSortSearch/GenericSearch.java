@@ -1,6 +1,9 @@
+package WaterSortSearch;
+
 import java.util.*;
 
 public  class GenericSearch {
+
 
     public Node BFSSolve(Problem problem) {
         Queue<Node> queue=new LinkedList<>();

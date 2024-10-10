@@ -1,22 +1,24 @@
+package WaterSortSearch;
+
 import java.util.ArrayList;
 
 public class Node implements Comparable<Node> {
     private final Node parent;
-    private String operator;
+    private String action;
     private final int depth;
     private final int pathCost;
     private final char[][] bottles;
 
-    public Node(char[][] bottles,Node parent,int incrementalCost) {
+    public Node(char[][] bottles,Node parent,int incrementalCost,String action) {
         this.bottles=bottles;
         this.parent=parent;
         this.pathCost=incrementalCost+parent.pathCost;
         this.depth=parent.depth+1;
-        this.operator="pour";
+        this.action=action;
     }
-    public Node(String state, Node parent, String operator, int depth, int pathCost) {
+    public Node(String state, Node parent, String action, int depth, int pathCost) {
         this.parent = parent;
-        this.operator = operator;
+        this.action = action;
         this.depth = depth;
         this.pathCost = pathCost;
         String[] states = state.split(";");
@@ -49,7 +51,8 @@ public class Node implements Comparable<Node> {
                 if (i == j)
                     continue;
                 Node pour1 = pour(i, j);
-                children.add(pour1);
+                if(pour1!=null)
+                  children.add(pour1);
             }
         return children;
     }
@@ -61,6 +64,7 @@ public class Node implements Comparable<Node> {
         int layer1Pointer = bottle1.length;
         int layer2Pointer = layer1Pointer;
         int cost=0;
+
         for (int i1 = 0; i1 < bottle1.length; i1++) {
             if (bottle1[i1] != 'e' && layer1Pointer == bottle1.length)
                 layer1Pointer = i1;
@@ -74,7 +78,9 @@ public class Node implements Comparable<Node> {
             bottle1[layer1Pointer++] = 'e';
             cost++;
         }
-        return new Node(new char[][]{bottle1,bottle2},parent,cost);
+        if (cost ==0)
+            return null;
+        return new Node(new char[][]{bottle1,bottle2},parent,cost,"pour_"+i+"_"+j);
     }
 
     public boolean isGoal() {

@@ -1,4 +1,5 @@
 
+package WaterSortSearch;
 public class WaterSortSearch extends GenericSearch{
 
     private Node root;
@@ -8,7 +9,8 @@ public class WaterSortSearch extends GenericSearch{
 
     Problem problem;
 
-    void solve(String initialState, String strategy, boolean visualize) {
+    public static String solve(String initialState, String strategy, boolean visualize) {
 
+        return initialState;
     }
 }

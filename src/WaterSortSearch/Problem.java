@@ -1,4 +1,4 @@
-import WaterSortSearch.Node;
+package WaterSortSearch;
 
 import java.util.List;
 
