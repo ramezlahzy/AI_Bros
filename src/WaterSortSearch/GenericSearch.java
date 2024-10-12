@@ -2,85 +2,54 @@ package WaterSortSearch;
 
 import java.util.*;
 
-public  class GenericSearch {
+public class GenericSearch {
 
     public static String solve(String initialState, String strategy, boolean visualize) {
-        char[][] bottles1 = {
-                {'b', 'y', 'r', 'b'},
-                {'y', 'y', 'r', 'r'},
-                {'e', 'b', 'b', 'y'},
-                {'e', 'e', 'e', 'r'},
-                {'e', 'e', 'e', 'e'}
-        };
-        char[][] bottles2 = {
-                {'b', 'y', 'r', 'b'},
-                {'y', 'y', 'r', 'r'},
-                {'e', 'b', 'b', 'y'},
-                {'e', 'e', 'e', 'r'},
-                {'e', 'e', 'e', 'e'}
-        };
 
-
-
-//                [b, y, r, b]
-//[y, y, r, r]
-//[e, b, b, y]
-//[e, e, e, r]
-//[e, e, e, e]
-
-        Node node1=new Node(bottles1,null,12,"",45);
-        Node node2=new Node(bottles2,null,0,"",0);
-        System.out.println(node1.equals(node2));
         return switch (strategy) {
             case "BF" -> BFSSolve(initialState);
             case "DF" -> DFSSolve(initialState);
             case "UC" -> UniCostSolve(initialState);
             case "ID" -> IDSolve(initialState);
+            case "GR1" -> Greedy1Solve(initialState);
+            case"GR2"-> Greedy2Solve(initialState);
+            case "AS1" -> AStar1(initialState);
+            case"AS2"-> AStar2(initialState);
             default -> "NOSOLUTION";
         };
 
     }
+
     public static String BFSSolve(String initialState) {
-        Queue<Node> queue=new LinkedList<>();
-        Node root=new Node(initialState, null, "", 0, 0);
-        Set<Node> visited=new HashSet<>();
+        Queue<Node> queue = new LinkedList<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        Set<Node> visited = new HashSet<>();
         int expandedNodes = 0;
 
         queue.add(root);
-//        System.out.println("root is: ");
-//        System.out.println(root);
-        int counter=0;
         visited.add(root);
-        while(!queue.isEmpty()){
-//            if(counter++>100)
-//                break;
-            System.out.println("queue's size  is: "+queue.size());
-            Node popped=queue.poll();
-            System.out.println("queue's size  is: "+queue.size());
-            System.out.println();
-            System.out.println("popped is: ");
-            System.out.println("visited is: "+visited);
-            System.out.println(popped);
+        while (!queue.isEmpty()) {
+            Node popped = queue.poll();
             expandedNodes++;
-            if(popped.isGoal())
-                return popped.getAction() + ";" + popped.getPathCost()+ ";" + expandedNodes;
-            ArrayList<Node> children=popped.expand();
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
             for (int i = 0; i < children.size(); i++) {
-                Node child=children.get(i);
-                boolean isVisited=false;
-                for (Node node:visited) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
                     if (node.equals(child)) {
                         isVisited = true;
                         break;
                     }
                 }
-                if(!isVisited) {
+                if (!isVisited) {
                     queue.add(child);
                     visited.add(child);
                 }
             }
         }
-        return "nosolution";
+        return "NOSULOTION";
     }
 
 
@@ -114,8 +83,9 @@ public  class GenericSearch {
                 }
             }
         }
-        return null;
+        return "NOSOLUTION";
     }
+
     public static String UniCostSolve(String initialState) {
         Set<Node> visited = new HashSet<>();
         Node root = new Node(initialState, null, "", 0, 0);
@@ -146,10 +116,10 @@ public  class GenericSearch {
                 }
             }
         }
-        return null;
+        return "NOSOLUTION";
     }
 
-    public static String DepthLimitedSearch(String initialState,int level) {
+    public static String DepthLimitedSearch(String initialState, int level) {
         Stack<Node> stack = new Stack<>();
         Set<Node> visited = new HashSet<>();
         Node root = new Node(initialState, null, "", 0, 0);
@@ -157,6 +127,7 @@ public  class GenericSearch {
 
         stack.push(root);
         visited.add(root);
+        boolean isStopedLevel = false;
         while (!stack.isEmpty()) {
             Node popped = stack.pop();
 
@@ -180,24 +151,174 @@ public  class GenericSearch {
                         visited.add(child);
                     }
                 }
-            }
+            } else
+                isStopedLevel = true;
         }
-        return null;
+        if (isStopedLevel)
+            return "STOPEDLEVEL";
+
+        return "NOSOLUTION";
     }
 
     public static String IDSolve(String initialState) {
-        String sol = "";
+        String sol;
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             sol = DepthLimitedSearch(initialState, i);
-            if (sol != null)
+            if (!sol.equals("STOPEDLEVEL"))
                 return sol;
-
-
-
-
         }
-        return null;
+        return "NOSOLUTION";
     }
+
+    public static String Greedy1Solve(String initialState) {
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.calculateHeuristicCost1()-o2.calculateHeuristicCost1();
+            }
+        });
+        priorityQueue.add(root);
+        visited.add(root);
+        int expandedNodes = 0;
+
+        while (!priorityQueue.isEmpty()) {
+            Node popped = priorityQueue.poll();
+
+            expandedNodes++;
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
+                    if (node.equals(child)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+                if (!isVisited) {
+                    priorityQueue.add(child);
+                    visited.add(child);
+                }
+            }
+        }
+        return "NOSOLUTION";
+    }
+    public static String Greedy2Solve(String initialState) {
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.calculateHeuristicCost2()-o2.calculateHeuristicCost2();
+            }
+        });
+        priorityQueue.add(root);
+        visited.add(root);
+        int expandedNodes = 0;
+
+        while (!priorityQueue.isEmpty()) {
+            Node popped = priorityQueue.poll();
+
+            expandedNodes++;
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
+                    if (node.equals(child)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+                if (!isVisited) {
+                    priorityQueue.add(child);
+                    visited.add(child);
+                }
+            }
+        }
+        return "NOSOLUTION";
+    }public static String AStar1(String initialState) {
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return (o1.calculateHeuristicCost1()+o1.getPathCost())-(o2.calculateHeuristicCost1()+o2.getPathCost());
+            }
+        });
+        priorityQueue.add(root);
+        visited.add(root);
+        int expandedNodes = 0;
+
+        while (!priorityQueue.isEmpty()) {
+            Node popped = priorityQueue.poll();
+
+            expandedNodes++;
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
+                    if (node.equals(child)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+                if (!isVisited) {
+                    priorityQueue.add(child);
+                    visited.add(child);
+                }
+            }
+        }
+        return "NOSOLUTION";
+    }
+
+    public static String AStar2(String initialState) {
+        Set<Node> visited = new HashSet<>();
+        Node root = new Node(initialState, null, "", 0, 0);
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return (o1.calculateHeuristicCost2()+o1.getPathCost())-(o2.calculateHeuristicCost2()+o2.getPathCost());
+            }
+        });
+        priorityQueue.add(root);
+        visited.add(root);
+        int expandedNodes = 0;
+
+        while (!priorityQueue.isEmpty()) {
+            Node popped = priorityQueue.poll();
+
+            expandedNodes++;
+            if (popped.isGoal())
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            ArrayList<Node> children = popped.expand();
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                boolean isVisited = false;
+                for (Node node : visited) {
+                    if (node.equals(child)) {
+                        isVisited = true;
+                        break;
+                    }
+                }
+                if (!isVisited) {
+                    priorityQueue.add(child);
+                    visited.add(child);
+                }
+            }
+        }
+        return "NOSOLUTION";
+    }
+
 //    public Node depthLimitedSearch(String initialState, int depth) {
 //        return DFSSolve(initialState, depth);
 //    }
