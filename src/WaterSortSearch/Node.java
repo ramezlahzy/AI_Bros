@@ -10,6 +10,10 @@ public class Node implements Comparable<Node> {
     private String action;
     private final int depth;
 
+    public char[][] getBottles() {
+        return bottles;
+    }
+
     public String getAction() {
         return action;
     }
