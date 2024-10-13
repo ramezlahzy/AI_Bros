@@ -27,7 +27,9 @@ public class Node implements Comparable<Node> {
         return pathCost;
     }
 
-
+   public Node getParent(){
+        return parent;
+   }
     public Node(char[][] bottles, Node parent, int pathCost, String action, int depth) {
         this.bottles = bottles;
         this.parent = parent;
@@ -65,58 +67,58 @@ public class Node implements Comparable<Node> {
         return true;
     }
 
-    public ArrayList<Node> expand() {
-        ArrayList<Node> children = new ArrayList<>();
-        for (int i = 0; i < bottles.length; i++)
-            for (int j = 0; j < bottles.length; j++) {
-                if (i == j)
-                    continue;
-                Node pour1 = pour(i, j);
-                if (pour1 != null)
-                    children.add(pour1);
-            }
-//        System.out.println("children of depth " + depth + " is:" + children.size());
-        return children;
-    }
+//    public ArrayList<Node> expand() {
+//        ArrayList<Node> children = new ArrayList<>();
+//        for (int i = 0; i < bottles.length; i++)
+//            for (int j = 0; j < bottles.length; j++) {
+//                if (i == j)
+//                    continue;
+//                Node pour1 = pour(i, j);
+//                if (pour1 != null)
+//                    children.add(pour1);
+//            }
+////        System.out.println("children of depth " + depth + " is:" + children.size());
+//        return children;
+//    }
+//
+//
+//    private Node pour(int i, int j) {
+//        char[][] allBottles = bottles.clone();
+//        char[] bottle1 = bottles[i].clone();
+//        char[] bottle2 = bottles[j].clone();
+//        allBottles[i] = bottle1;
+//        allBottles[j] = bottle2;
+//        int layer1Pointer = bottle1.length;
+//        int layer2Pointer = layer1Pointer;
+//        int cost = 0;
+//
+//        for (int i1 = 0; i1 < bottle1.length; i1++) {
+//            if (bottle1[i1] != 'e' && layer1Pointer == bottle1.length)
+//                layer1Pointer = i1;
+//            if (bottle2[i1] != 'e' && layer2Pointer == bottle2.length)
+//                layer2Pointer = i1;
+//        }
+//        while (layer1Pointer < bottle1.length && layer2Pointer > 0) {
+//            if (layer2Pointer < bottle2.length && bottle1[layer1Pointer] != bottle2[layer2Pointer])
+//                break;
+//            bottle2[--layer2Pointer] = bottle1[layer1Pointer];
+//            bottle1[layer1Pointer++] = 'e';
+//            cost++;
+//        }
+//        if (cost == 0)
+//            return null;
+//        String actions = action.isEmpty() ? "" : action + ",";
+//
+//        return new Node(allBottles, parent, this.pathCost + cost, actions + "pour_" + i + "_" + j, this.depth + 1);
+//    }
 
-
-    private Node pour(int i, int j) {
-        char[][] allBottles = bottles.clone();
-        char[] bottle1 = bottles[i].clone();
-        char[] bottle2 = bottles[j].clone();
-        allBottles[i] = bottle1;
-        allBottles[j] = bottle2;
-        int layer1Pointer = bottle1.length;
-        int layer2Pointer = layer1Pointer;
-        int cost = 0;
-
-        for (int i1 = 0; i1 < bottle1.length; i1++) {
-            if (bottle1[i1] != 'e' && layer1Pointer == bottle1.length)
-                layer1Pointer = i1;
-            if (bottle2[i1] != 'e' && layer2Pointer == bottle2.length)
-                layer2Pointer = i1;
-        }
-        while (layer1Pointer < bottle1.length && layer2Pointer > 0) {
-            if (layer2Pointer < bottle2.length && bottle1[layer1Pointer] != bottle2[layer2Pointer])
-                break;
-            bottle2[--layer2Pointer] = bottle1[layer1Pointer];
-            bottle1[layer1Pointer++] = 'e';
-            cost++;
-        }
-        if (cost == 0)
-            return null;
-        String actions = action.isEmpty() ? "" : action + ",";
-
-        return new Node(allBottles, parent, this.pathCost + cost, actions + "pour_" + i + "_" + j, this.depth + 1);
-    }
-
-    public boolean isGoal() {
-        for (char[] bottle : bottles)
-            for (int i = 0; i < bottle.length - 1; i++)
-                if (bottle[i] != bottle[i + 1]&&bottle[i]!='e')
-                    return false;
-        return true;
-    }
+//    public boolean isGoal() {
+//        for (char[] bottle : bottles)
+//            for (int i = 0; i < bottle.length - 1; i++)
+//                if (bottle[i] != bottle[i + 1]&&bottle[i]!='e')
+//                    return false;
+//        return true;
+//    }
 
     @Override
     public int compareTo(Node o) {
@@ -136,26 +138,26 @@ public class Node implements Comparable<Node> {
 
     }
 
-    public int calculateHeuristicCost1() {//no of bottles
-        int heuristicCost1 = 0;
-        boolean filled = true;
-        for (char[] bottle : bottles) {
-            for (int i = 0; i < bottle.length - 1; i++)
-                if (bottle[i] != bottle[i + 1])
-                    filled = false;
-            if (!filled)
-                heuristicCost1++;
-        }
-        return heuristicCost1;
-    }
-    public int calculateHeuristicCost2() {//no of layers
-        int heuristicCost2 = 0;
-        for (char[] bottle : bottles) {
-            for (int i = 0; i < bottle.length - 1; i++)
-                if (bottle[i] != bottle[i + 1])
-                    heuristicCost2++;
-        }
-        return heuristicCost2;
-    }
+//    public int calculateHeuristicCost1() {//no of bottles
+//        int heuristicCost1 = 0;
+//        boolean filled = true;
+//        for (char[] bottle : bottles) {
+//            for (int i = 0; i < bottle.length - 1; i++)
+//                if (bottle[i] != bottle[i + 1])
+//                    filled = false;
+//            if (!filled)
+//                heuristicCost1++;
+//        }
+//        return heuristicCost1;
+//    }
+//    public int calculateHeuristicCost2() {//no of layers
+//        int heuristicCost2 = 0;
+//        for (char[] bottle : bottles) {
+//            for (int i = 0; i < bottle.length - 1; i++)
+//                if (bottle[i] != bottle[i + 1])
+//                    heuristicCost2++;
+//        }
+//        return heuristicCost2;
+//    }
 
 }

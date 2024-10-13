@@ -7,11 +7,14 @@ import Heuristic.HeuriticTwo;
 import strategies_queues.*;
 
 public class WaterSortSearch extends GenericSearch{
-
+ public static boolean visualize;
     public static String solve(String initialState, String strategy, boolean visualize) {
-            StrategyQueue queue;
+
+        WaterSortSearch.visualize=visualize;
+
+        StrategyQueue queue;
              int stoplevel=-1;
-            // Select the appropriate strategy queue based on the strategy argument
+        Problem problem = new Problem(initialState);
             switch (strategy) {
                 case "BF":
                     queue = new BFSQ(); // Queue for BFS
@@ -20,7 +23,7 @@ public class WaterSortSearch extends GenericSearch{
                     queue = new DFSQ(); // Stack for DFS
                     break;
                 case "ID":
-                    return iterativeDeepeningSearch(initialState, visualize);
+                    return iterativeDeepeningSearch(problem, visualize);
                 case "UC":
                     queue = new USCQ(); // Queue for UCS
                     break;
@@ -40,13 +43,13 @@ public class WaterSortSearch extends GenericSearch{
                     throw new IllegalArgumentException("Invalid strategy");
             }
 
-            return generalSearch(initialState, queue,stoplevel);
+            return generalSearch(problem, queue,stoplevel);
         }
 
-        private static String iterativeDeepeningSearch(String initialState, boolean visualize) {
+        private static String iterativeDeepeningSearch(Problem problem, boolean visualize) {
             String sol="";
             for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                sol= generalSearch(initialState, new DFSQ(),i);
+                sol= generalSearch(problem, new DFSQ(),i);
                 if (!sol.equals("STOPEDLEVEL"))
                     return sol;
             }
@@ -89,12 +92,17 @@ public class WaterSortSearch extends GenericSearch{
                     "g,g,b;" +
                     "e,e,e;" +
                     "e,e,e;";
-           System.out.println( WaterSortSearch.solve(grid0, "UC", false));
-            System.out.println(   WaterSortSearch.solve(grid1, "UC", false));
-            System.out.println(  WaterSortSearch.solve(grid2, "UC", false));
-            System.out.println(  WaterSortSearch.solve(grid3, "UC", false));
-            System.out.println(   WaterSortSearch.solve(grid4, "UC", false));
+           System.out.println( WaterSortSearch.solve(grid0, "ID", true));
+            System.out.println(   WaterSortSearch.solve(grid1, "ID", false));
+            System.out.println(  WaterSortSearch.solve(grid2, "ID", false));
+            System.out.println(  WaterSortSearch.solve(grid3, "ID", false));
+            System.out.println(   WaterSortSearch.solve(grid4, "ID", false));
         }
     }
 
 
+//pour_1_2,pour_0_1,pour_0_2,pour_1_0,pour_1_2,pour_0_1;9;9
+//pour_2_4,pour_2_3,pour_0_2,pour_0_4,pour_0_3,pour_2_0,pour_1_0,pour_1_4;9;66
+//pour_2_4,pour_2_3,pour_0_2,pour_0_4,pour_0_3,pour_2_0,pour_1_0,pour_1_4;9;66
+//pour_1_5,pour_3_1,pour_2_3,pour_4_2,pour_0_5,pour_2_0,pour_3_2,pour_1_3,pour_1_0,pour_2_1,pour_3_2;20;17
+//pour_3_5,pour_2_4,pour_1_3,pour_2_3,pour_1_4,pour_0_1;8;52

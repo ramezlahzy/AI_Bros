@@ -6,25 +6,27 @@ import java.util.*;
 
 public  abstract class   GenericSearch {
 
-////////////////if iterative should the expanded nodes sum of all iterations or only last one?????
-    public static String generalSearch(String initialState, StrategyQueue queue, int stopLevel) {
+
+    public static String generalSearch(Problem problem, StrategyQueue queue, int stopLevel) {
         Set<Node> visited = new HashSet<>();
-        int expandedNodes = 0;
-        Node root = new Node(initialState, null, "", 0, 0);
-        queue.add(root);
+
+        queue.add(problem.root);
         boolean isStopedLevel = false;
         while (!queue.isEmpty()) {
 
             Node popped = queue.poll();
+            if(WaterSortSearch.visualize){
+              System.out.println(popped);
+              System.out.println("---------------------");}
 
-
-            if (popped.isGoal()) {
-                return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
+            if (problem.isGoal(popped)) {
+                return popped.getAction() + ";" + popped.getPathCost() + ";" + problem.expandedNodes;
             }
 
             if (stopLevel==-1||popped.getDepth() < stopLevel){
-                ArrayList<Node> children = popped.expand();
-                expandedNodes++;
+                ArrayList<Node> children = problem.expand(popped);
+
+               problem.expandedNodes++;
                 for (int i = 0; i < children.size(); i++) {
                 Node child = children.get(i);
                 boolean isVisited = false;
