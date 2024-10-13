@@ -75,7 +75,7 @@ public class Node implements Comparable<Node> {
                 if (pour1 != null)
                     children.add(pour1);
             }
-        System.out.println("children of depth " + depth + " is:" + children.size());
+//        System.out.println("children of depth " + depth + " is:" + children.size());
         return children;
     }
 
@@ -113,7 +113,7 @@ public class Node implements Comparable<Node> {
     public boolean isGoal() {
         for (char[] bottle : bottles)
             for (int i = 0; i < bottle.length - 1; i++)
-                if (bottle[i] != bottle[i + 1])
+                if (bottle[i] != bottle[i + 1]&&bottle[i]!='e')
                     return false;
         return true;
     }

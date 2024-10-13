@@ -16,13 +16,15 @@ public  abstract class   GenericSearch {
         while (!queue.isEmpty()) {
 
             Node popped = queue.poll();
-            expandedNodes++;
+
 
             if (popped.isGoal()) {
                 return popped.getAction() + ";" + popped.getPathCost() + ";" + expandedNodes;
             }
-            ArrayList<Node> children = popped.expand();
+
             if (stopLevel==-1||popped.getDepth() < stopLevel){
+                ArrayList<Node> children = popped.expand();
+                expandedNodes++;
                 for (int i = 0; i < children.size(); i++) {
                 Node child = children.get(i);
                 boolean isVisited = false;
