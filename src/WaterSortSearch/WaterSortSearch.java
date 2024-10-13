@@ -7,10 +7,10 @@ import Heuristic.HeuriticTwo;
 import strategies_queues.*;
 
 public class WaterSortSearch extends GenericSearch{
- public static boolean visualize;
+ public static boolean visualize=true;
     public static String solve(String initialState, String strategy, boolean visualize) {
 
-        WaterSortSearch.visualize=visualize;
+//        WaterSortSearch.visualize=visualize;
 
         StrategyQueue queue;
              int stoplevel=-1;
