@@ -10,7 +10,7 @@ public class WaterSortSearch extends GenericSearch{
  public static boolean visualize=true;
     public static String solve(String initialState, String strategy, boolean visualize) {
 
-//        WaterSortSearch.visualize=visualize;
+        WaterSortSearch.visualize=visualize;
 
         StrategyQueue queue;
              int stoplevel=-1;
@@ -92,11 +92,11 @@ public class WaterSortSearch extends GenericSearch{
                     "g,g,b;" +
                     "e,e,e;" +
                     "e,e,e;";
-           System.out.println( WaterSortSearch.solve(grid0, "ID", true));
-            System.out.println(   WaterSortSearch.solve(grid1, "ID", false));
-            System.out.println(  WaterSortSearch.solve(grid2, "ID", false));
-            System.out.println(  WaterSortSearch.solve(grid3, "ID", false));
-            System.out.println(   WaterSortSearch.solve(grid4, "ID", false));
+           System.out.println( WaterSortSearch.solve(grid0, "AS2", true));
+            System.out.println(   WaterSortSearch.solve(grid1, "AS2", true));
+            System.out.println(  WaterSortSearch.solve(grid2, "AS2", true));
+            System.out.println(  WaterSortSearch.solve(grid3, "AS2", true));
+            System.out.println(   WaterSortSearch.solve(grid4, "AS2", true));
         }
     }
 

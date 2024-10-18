@@ -23,13 +23,13 @@ public  abstract class   GenericSearch {
                 return popped.getAction() + ";" + popped.getPathCost() + ";" + problem.expandedNodes;
             }
 
+               problem.expandedNodes++;
             if (stopLevel==-1||popped.getDepth() < stopLevel){
                 ArrayList<Node> children = problem.expand(popped);
 
-               problem.expandedNodes++;
 
-//
-            for (int i = 0; i < children.size(); i++) {
+                for (int i = 0; i < children.size(); i++) {
+
                 Node child = children.get(i);
 //                boolean isVisited = false;
 //                for (Node node : visited) {
