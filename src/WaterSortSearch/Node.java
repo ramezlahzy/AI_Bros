@@ -128,5 +128,15 @@ public class Node implements Comparable<Node> {
 //        }
 //        return heuristicCost2;
 //    }
-
+    //hash code to be the string of bottles
+    @Override
+    public int hashCode() {
+        StringBuilder hash = new StringBuilder();
+        for (char[] bottle : bottles) {
+            for (char c : bottle) {
+                hash.append(c);
+            }
+        }
+        return hash.toString().hashCode();
+    }
 }

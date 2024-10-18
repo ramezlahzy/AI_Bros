@@ -27,20 +27,23 @@ public  abstract class   GenericSearch {
             if (stopLevel==-1||popped.getDepth() < stopLevel){
                 ArrayList<Node> children = problem.expand(popped);
 
+
                 for (int i = 0; i < children.size(); i++) {
+
                 Node child = children.get(i);
-                boolean isVisited = false;
-                for (Node node : visited) {
-                    if (node.equals(child)) {
-                        isVisited = true;
-                        break;
-                    }
-                }
-                if (!isVisited) {
+//                boolean isVisited = false;
+//                for (Node node : visited) {
+//                    if (node.equals(child)) {
+//                        isVisited = true;
+//                        break;
+//                    }
+//                }
+                if (!visited.contains(child)) {
                     queue.add(child);
                     visited.add(child);
                 }
             }
+
 
         }else
                 isStopedLevel = true;
